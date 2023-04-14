@@ -2,10 +2,10 @@
 
 from utils.data_loader import load_kor_list
 
-kor_list = load_kor_list() # list of korean characters
+kor_list = load_kor_list()  # list of korean characters
 
 
-def get_linear(x1, y1, x2, y2): # return a, b of y = ax + b
+def get_linear(x1, y1, x2, y2):  # return a, b of y = ax + b
     if (x2 - x1) == 0:
         return 1, 0
     a = (y2 - y1) / (x2 - x1)
@@ -13,7 +13,7 @@ def get_linear(x1, y1, x2, y2): # return a, b of y = ax + b
     return a, b
 
 
-def is_on_line(box, line): # return True if box is on line else False
+def is_on_line(box, line):  # return True if box is on the line else False
     x1, y1, x2, y2 = box.xyxy.tolist()[0]
     x = (x1 + x2) / 2
 
@@ -25,7 +25,7 @@ def is_on_line(box, line): # return True if box is on line else False
         return True
 
 
-def sort_num(boxes): # return ordered number
+def sort_num(boxes):  # return ordered number
     if len(boxes.xywhn.tolist()) == 0:
         return None
 
@@ -71,7 +71,7 @@ def sort_num(boxes): # return ordered number
     return plate_num
 
 
-def max_min_idx(boxes): # return index of max and min box by x
+def max_min_idx(boxes):  # return index of max and min box by x
     boxes_x = list(list(zip(*boxes.xywhn.tolist()))[0])
     boxes_rank = boxes_x.copy()
     boxes_rank.sort()
@@ -80,11 +80,11 @@ def max_min_idx(boxes): # return index of max and min box by x
     return max_idx, min_idx
 
 
-class DetectNumber: # this class is for detecting number in the image and returning the ordered number
+class DetectNumber:  # this class is for detecting number in the image and returning the ordered number
     def __init__(self, model):
         self.model = model
 
-    def get_num_from_img(self, img): # detect number in the image and return ordered number
+    def get_num_from_img(self, img):  # detect number in the image and return ordered number
         result = self.model(img)
         boxes = result[0].boxes
         plate_num = sort_num(boxes)
