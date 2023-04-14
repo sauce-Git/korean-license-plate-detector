@@ -33,16 +33,19 @@ def warp(img, vertex_box): # return warped plate image
     tr = vertex_list[np.argmin(diff)]
     bl = vertex_list[np.argmax(diff)]
 
-    # vertex 정렬
+    # vertex 가 잘못된 경우
+    if tl[0] >= tr[0] or tl[1] >= bl[1] or br[0] <= bl[0] or br[1] <= tr[1]:
+        return None
+
     dst1 = np.array([tl, tr, br, bl], dtype=np.float32)
 
-    # vertex로 변환할 크기 계산
+    # vertex 로 변환할 크기 계산
     w1 = abs(br[0] - bl[0])
     w2 = abs(tr[0] - tl[0])
     h1 = abs(tr[1] - br[1])
     h2 = abs(tl[1] - bl[1])
 
-    # vertex로 변환할 크기 설정
+    # vertex 로 변환할 크기 설정
     width = max([w1, w2])
     height = max([h1, h2])
     dst2 = np.array([[0, 0], [width, 0], [width, height], [0, height]], dtype=np.float32)

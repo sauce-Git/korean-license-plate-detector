@@ -17,6 +17,7 @@ from detect import get_num
 
 title = "Number Detector"
 
+
 def remake_dir_path(path):
     if path[-1] != '/':
         path += '/'
@@ -95,7 +96,7 @@ class MainWindow(QMainWindow):
     def choose_file(self):
         file = QFileDialog.getOpenFileName(self.window, "Select File")
         self.set_image(file[0])
-        self.window.label.setText("이미지 파일을 찾았습니다(%s개). \n\n변환을 눌러주세요"%(len(self.img_list)))
+        self.window.label.setText("이미지 파일을 찾았습니다(%s개). \n\n변환을 눌러주세요" % (len(self.img_list)))
         self.dir = ""
         self.file = file[0]
 
@@ -107,12 +108,12 @@ class MainWindow(QMainWindow):
         if self.dir:
             self.worker = Worker(self.convert_dir_to_num_list, self.img_list)
             self.worker.start()
-            self.local_event_loop.exec() # Wait for the thread to finish
+            self.local_event_loop.exec()  # Wait for the thread to finish
 
             for idx in range(len(self.result)):
                 if self.result[idx] is None:
                     self.set_image(self.img_list[idx])
-                    self.window.label.setText("번호판을 인식하지 못했습니다. 번호판을 입력해주세요\n\n이미지: %s"%(self.img_list[idx]))
+                    self.window.label.setText("번호판을 인식하지 못했습니다. 번호판을 입력해주세요\n\n이미지: %s" % (self.img_list[idx]))
                     self.window.label.setWordWrap(True)
                     self.local_event_loop.exec()
                     self.result[idx] = self.car_num
@@ -125,7 +126,7 @@ class MainWindow(QMainWindow):
 
         elif self.file:
             img = cv2.imread(self.file)
-            self.window.label.setText("완료!\n\n%s"%(get_num(img)))
+            self.window.label.setText("완료!\n\n%s" % (get_num(img)))
             self.window.progressBar.setValue(100)
 
         else:
@@ -138,17 +139,21 @@ class MainWindow(QMainWindow):
         self.local_event_loop.exit()
 
     def set_image(self, img):
+        img_name = img.split('/')[-1]
+        if os.path.isfile('temp_data/' + img_name):  # check temp data is available
+            img = 'temp_data/' + img_name
+
         self.window.Image.setPixmap(QPixmap(img).scaled(self.window.Image.width(),
                                                         self.window.Image.height(),
                                                         Qt.KeepAspectRatio))
 
-    def convert_dir_to_num_list(self, img_list=None): # convert image list to number list
+    def convert_dir_to_num_list(self, img_list=None):  # convert image list to number list
         result = []
 
         for img_path in img_list:
             img = cv2.imread(img_path)
 
-            plate_num = get_num(img)
+            plate_num = get_num(img=img, save_not_detected=True, save_name=img_path)
 
             if plate_num is not None:
                 result.append(plate_num)
@@ -158,7 +163,7 @@ class MainWindow(QMainWindow):
             self.window.progressBar.setValue((img_list.index(img_path) + 1) / len(img_list) * 100)
 
         self.result = result
-        self.local_event_loop.exit() # exit local event loop
+        self.local_event_loop.exit()  # exit local event loop
 
 
 if __name__ == "__main__":
