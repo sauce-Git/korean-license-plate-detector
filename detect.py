@@ -32,11 +32,20 @@ def get_num(img, save=False, save_not_detected=False, save_path='./temp_data/',
     cropped_img = plate_detector.detect_and_crop(img)  # crop the image
     warped_img = vertex_detector.detect_and_warp(cropped_img)  # warp the image
 
+    if cropped_img is None:
+        print("cropped_img is None")
+    if warped_img is None:
+        print("warped_img is None")
+
     if cropped_img is not None:
         res1 = syllable_detector.get_num_from_img(cropped_img)  # get the number from the cropped image
+    else:
+        res1 = None
 
     if warped_img is not None:
         res2 = syllable_detector.get_num_from_img(warped_img)  # get the number from the warped image
+    else:
+        res2 = None
 
     result = confirm_num(res1, res2)  # return the number that is confirmed to be the license plate number
 

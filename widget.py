@@ -151,6 +151,7 @@ class MainWindow(QMainWindow):
         result = []
 
         for img_path in img_list:
+            print(img_path)
             img = cv2.imread(img_path)
 
             plate_num = get_num(img=img, save_not_detected=True, save_name=img_path)
