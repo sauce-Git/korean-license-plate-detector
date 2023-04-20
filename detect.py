@@ -30,12 +30,10 @@ def get_num(img, save=False, save_not_detected=False, save_path='./temp_data/',
         save_name = save_name[:-1]
 
     cropped_img = plate_detector.detect_and_crop(img)  # crop the image
-    warped_img = vertex_detector.detect_and_warp(cropped_img)  # warp the image
-
-    if cropped_img is None:
-        print("cropped_img is None")
-    if warped_img is None:
-        print("warped_img is None")
+    if cropped_img is not None:
+        warped_img = vertex_detector.detect_and_warp(cropped_img)  # warp the image
+    else:
+        warped_img = None
 
     if cropped_img is not None:
         res1 = syllable_detector.get_num_from_img(cropped_img)  # get the number from the cropped image
